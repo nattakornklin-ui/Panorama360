@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Panorama 360 — สร้างภาพพาโนรามาของคุณ{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <div class="eyebrow"><span></span> IMMERSIVE IMAGE WORKSPACE</div>
+    <h1>เปลี่ยนภาพถ่าย<br><em>ให้เป็นโลก 360°</em></h1>
+    <p>รวมภาพถ่ายหลายมุมให้กลายเป็นภาพพาโนรามา พร้อมแชร์ประสบการณ์ผ่านลิงก์และ QR Code ได้ทันที</p>
+    <a class="text-link" href="#upload">เริ่มสร้าง Panorama <b>↓</b></a>
+  </div>
+  <div class="hero-art" aria-label="ภาพตัวอย่างพาโนรามา">
+    <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+    <div class="hero-sphere"><span>360°</span></div>
+    <div class="float-tag">YOUR WORLD, ALL AROUND</div>
+  </div>
+</section>
+
+<section class="workspace" id="upload">
+  <div class="section-heading"><div><div class="eyebrow">CREATE YOUR PANORAMA</div><h2>เริ่มต้นจากภาพถ่ายของคุณ</h2></div><span class="step-pill">01 / UPLOAD</span></div>
+  {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}<div class="alert {{ category }}">{{ message }}</div>{% endfor %}
+  {% endwith %}
+  <form method="post" enctype="multipart/form-data" id="upload-form">
+    <label class="dropzone" id="dropzone" for="images">
+      <input type="file" id="images" name="images" accept=".jpg,.jpeg,.png,image/jpeg,image/png" multiple required>
+      <span class="upload-icon">＋</span>
+      <strong>ลากภาพมาวางที่นี่ หรือ <u>เลือกไฟล์</u></strong>
+      <span class="muted">รองรับ JPG, JPEG, PNG · อย่างน้อย 3 ภาพ · สูงสุด 20 ภาพ</span>
+      <span class="muted small">ขนาดไม่เกิน 20 MB ต่อภาพ และ 100 MB รวม</span>
+    </label>
+    <div id="preview-area" class="preview-area" hidden>
+      <div class="preview-head"><strong id="file-count">0 ภาพที่เลือก</strong><button type="button" class="button-quiet" id="clear-files">ล้างรายการ</button></div>
+      <div class="preview-grid" id="preview-grid"></div>
+    </div>
+    <div class="form-actions"><p class="hint">เคล็ดลับ: ถ่ายภาพโดยหมุนจากจุดเดิม และให้ภาพซ้อนทับกันประมาณ 30–50%</p><button class="button-primary" type="submit" id="submit-button">สร้างภาพ Panorama <span>→</span></button></div>
+    <div class="processing" id="processing" hidden><span class="spinner"></span> กำลังเชื่อมภาพ กรุณารอสักครู่…</div>
+  </form>
+  {% if result %}
+  <section class="result-card">
+    <div class="result-copy"><div class="eyebrow">PANORAMA READY</div><h3>สร้าง Panorama สำเร็จแล้ว!</h3><p>ภาพของคุณพร้อมเปิดดูและแชร์แล้ว</p>
+      <a class="button-primary inline-button" href="{{ url_for('view', image_id=result.id) }}">เปิดดูภาพ 360° →</a>
+      <div class="share-url"><input id="share-url" value="{{ result.url }}" readonly><button type="button" id="copy-url" class="button-secondary">คัดลอก</button></div>
+      <a class="download-link" href="{{ result.qr }}" download="panorama-qr-{{ result.id }}.png">ดาวน์โหลด QR Code ↓</a>
+    </div>
+    <div class="qr-panel"><img src="{{ result.qr }}" alt="QR Code สำหรับเปิด Panorama"><span>สแกนเพื่อเปิดชม</span></div>
+  </section>
+  {% endif %}
+</section>
+<section class="how" id="how"><div class="eyebrow">SIMPLE WORKFLOW</div><h2>สร้างและแชร์ได้ใน 3 ขั้นตอน</h2><div class="how-grid">
+  <article><span>01</span><h3>อัปโหลดภาพ</h3><p>เลือกภาพถ่ายที่มีมุมมองต่อเนื่องกันอย่างน้อย 3 ภาพ</p></article>
+  <article><span>02</span><h3>ให้ระบบเชื่อมภาพ</h3><p>OpenCV วิเคราะห์จุดร่วมและประกอบภาพเป็น Panorama</p></article>
+  <article><span>03</span><h3>เปิดดูและแชร์</h3><p>รับลิงก์และ QR Code เพื่อส่งต่อให้ผู้อื่นเข้าชม</p></article>
+</div></section>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}360° Viewer — Panorama Studio{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+{% endblock %}
+{% block content %}
+<section class="viewer-page">
+  <div class="viewer-heading"><div><div class="eyebrow">IMMERSIVE EXPERIENCE</div><h1>Panorama <em>Viewer</em></h1><p>ลากเพื่อหมุนมุมมอง · เลื่อนเพื่อซูม</p></div><a class="button-secondary" href="{{ url_for('index') }}">＋ สร้างภาพใหม่</a></div>
+  <div id="panorama" data-image="{{ image_url }}"></div>
+  <div class="viewer-tools"><span>ลากเมาส์หรือใช้นิ้วเพื่อสำรวจภาพ</span><button type="button" id="fullscreen-button" class="button-secondary">⛶ เต็มหน้าจอ</button></div>
+  <div class="viewer-note">หากภาพต้นฉบับไม่ใช่ภาพแบบ equirectangular การแสดงผล 360° อาจมีสัดส่วนหรือรอยต่อที่ไม่สมบูรณ์</div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+<script>
+  const pano = document.getElementById('panorama');
+  const viewer = pannellum.viewer('panorama', {
+    type: 'equirectangular',
+    panorama: pano.dataset.image,
+    autoLoad: true,
+    showControls: true,
+    compass: false,
+    hfov: 100,
+    minHfov: 50,
+    maxHfov: 120,
+    pitch: 0,
+    yaw: 0
+  });
+  document.getElementById('fullscreen-button').addEventListener('click', () => viewer.toggleFullscreen());
+</script>
+{% endblock %}
